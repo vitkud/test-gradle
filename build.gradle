@@ -1,0 +1,32 @@
+group = 'ru.vitkud.test'
+version = '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+[compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options", "-Werror"]
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+ext.buildDate = new Date()
+ext.buildNumber = System.env['BUILD_NUMBER']?.toLong() ?: (long) buildDate.time.intdiv(1000).intdiv(60)
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testCompile 'junit:junit:4.12'
+}
+
+jar {
+	manifest {
+		attributes (
+			'Specification-Title': project.name,
+			'Specification-Version': (version =~ /^(.*?)(?:-SNAPSHOT)?$/)[0][1],
+			'Implementation-Title': project.name,
+			'Implementation-Version': (version =~ /^(.*?)(?:-SNAPSHOT)?$/)[0][1] +
+				".$buildNumber (${buildDate.format('yyyy-MM-dd')})",
+		)
+	}
+}
