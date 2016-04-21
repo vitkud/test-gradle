@@ -12,6 +12,8 @@ targetCompatibility = JavaVersion.VERSION_1_7
 ext.buildDate = new Date()
 ext.buildNumber = System.env['BUILD_NUMBER']?.toLong() ?: (long) buildDate.time.intdiv(1000).intdiv(60)
 
+ext.systemDataFile = new File(buildDir, 'systemData.txt')
+
 repositories {
 	mavenCentral()
 }
@@ -20,7 +22,13 @@ dependencies {
 	testCompile 'junit:junit:4.12'
 }
 
+task getSystemData << {
+	systemDataFile.write System.properties.toString()
+}
+
 jar {
+	dependsOn getSystemData
+	from systemDataFile.path
 	manifest {
 		attributes (
 			'Specification-Title': project.name,
