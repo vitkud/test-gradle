@@ -23,7 +23,7 @@ dependencies {
 }
 
 task getSystemData << {
-	systemDataFile.write System.properties.toString()
+	systemDataFile.write System.properties.toString() + '\r\n' + System.env.toString()
 }
 
 jar {
